@@ -1,36 +1,191 @@
+
 \section{Desarrollo}
 
-\subsection{Reglas de negocio y Compilación (Makefile)}
-Para esta práctica, todo el código fuente distribuido en los archivos \texttt{.c} y \texttt{.h} fue estructurado para compilarse mediante un archivo \texttt{Makefile}. A continuación se demuestra que la compilación se ejecutó estrictamente en lenguaje C sin advertencias ni errores:
+El desarrollo del sistema de inicio de sesión se realizó en lenguaje C, 
+utilizando la biblioteca \texttt{ncurses} para construir una interfaz de usuario basada en texto y la biblioteca \texttt{libsodium} para el procesamiento seguro de contraseñas. 
+El sistema permite registrar cuentas, autenticar usuarios y almacenar la información necesaria para conservar los registros entre ejecuciones.
 
-% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{img/captura_makefile.png}
-%     \caption{Compilación limpia del código fuente mediante el comando make.}
-% \end{figure}
+La implementación se organizó en módulos para separar la lógica de autenticación, los componentes visuales y el flujo principal de ejecución. 
+Esta distribución facilita la comprensión del código y permite distinguir las responsabilidades de cada componente.
 
-\subsection{Implementación del inicio de sesión con ncurses}
-Se implementó un menú interactivo utilizando la biblioteca ncurses para estructurar visualmente la entrada de datos. El sistema solicita el nombre de usuario y la contraseña, habiendo configurado previamente la terminal con la función \texttt{noecho()} para ocultar el texto introducido en el campo de la clave, cumpliendo con las especificaciones de la práctica.
+\subsection{Organización del código fuente}
 
-% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{img/captura_login.png}
-%     \caption{Interfaz basada en texto (ncurses) solicitando usuario y contraseña oculta.}
-% \end{figure}
+El proyecto se encuentra dividido en los archivos siguientes:
 
-\subsection{Cifrado de contraseñas y validación}
-Antes de procesar las credenciales, el sistema valida que los campos no se encuentren vacíos y no excedan el límite de caracteres permitidos para prevenir desbordamientos de búfer. Seguidamente, la contraseña en texto plano pasa por el algoritmo de cifrado antes de ser comparada con los registros existentes o guardada en caso de ser un usuario nuevo. No se utilizan gestores de bases de datos externos.
+\begin{itemize}
+    \item \texttt{main.c}: contiene el flujo principal de ejecución y la coordinación de las operaciones de inicio de sesión y registro de usuarios.
+    \item \texttt{auth.c}: implementa las funciones relacionadas con la autenticación, el registro de cuentas, la validación de credenciales y el manejo de la información persistente.
+    \item \texttt{auth.h}: declara las funciones y las interfaces utilizadas por el módulo de autenticación.
+    \item \texttt{ui.c}: contiene las funciones encargadas de mostrar los elementos de la interfaz mediante \texttt{ncurses} y procesar la interacción con el usuario.
+    \item \texttt{ui.h}: declara las funciones y las interfaces correspondientes al módulo de presentación.
+    \item \texttt{Makefile}: define las instrucciones necesarias para compilar y enlazar el programa.
+\end{itemize}
+
+La separación entre autenticación e interfaz permite mantener diferenciadas las operaciones que procesan las credenciales y aquellas que presentan los formularios y mensajes en pantalla. 
+El archivo principal coordina ambos módulos para establecer el flujo de navegación de la aplicación.
+
+\subsection{Compilación del programa}
+
+La compilación se administra mediante un archivo \texttt{Makefile}, que reúne las opciones del compilador, los archivos fuente y las bibliotecas requeridas por el proyecto. 
+Para generar el ejecutable se utiliza el compilador GCC con las opciones de lenguaje C11 y advertencias de compilación.
+
+Entre las opciones de compilación se encuentran \texttt{-Wall}, \texttt{-Wextra} y \texttt{-Wpedantic}, 
+que habilitan advertencias relacionadas con posibles errores y construcciones que no se ajustan al estándar seleccionado. La opción \texttt{-O2} aplica optimizaciones al código generado.
+
+El programa requiere las bibliotecas \texttt{ncurses}, \texttt{tinfo} y \texttt{sodium}. 
+Las dos primeras proporcionan las funciones necesarias para la interfaz de terminal, mientras que \texttt{libsodium} incorpora las operaciones criptográficas empleadas en el procesamiento de contraseñas.
+
+La compilación puede realizarse desde el directorio del proyecto mediante el siguiente comando:
+
+\begin{verbatim}
+make
+\end{verbatim}
+
+Cuando la compilación finaliza correctamente, se genera el ejecutable \texttt{acceso}. Para iniciar la aplicación se utiliza:
+
+\begin{verbatim}
+./acceso
+\end{verbatim}
+
+Este procedimiento permite generar y ejecutar el sistema desde los archivos fuente del proyecto, siempre que las dependencias requeridas se encuentren instaladas en el entorno.
+
+\subsection{Implementación de la interfaz con ncurses}
+
+La interfaz de usuario se desarrolló mediante la biblioteca \texttt{ncurses}, que permite controlar la presentación de texto, la posición del cursor y la lectura de entradas del teclado dentro de una terminal. 
+Su utilización hace posible organizar los formularios y los mensajes de la aplicación sin recurrir a una interfaz gráfica tradicional.
+
+La pantalla presenta las opciones relacionadas con el acceso y el registro de cuentas. 
+Los campos de entrada se representan visualmente como cuadros de texto, mientras que las opciones seleccionadas se distinguen mediante resaltados de color. 
+El diseño utiliza una combinación de fondo oscuro y texto claro para mantener una presentación uniforme.
+
+La navegación se realiza mediante las teclas de dirección, la tecla \texttt{ENTER} y la tecla \texttt{ESC}. 
+Las teclas de dirección permiten desplazarse entre las opciones disponibles; \texttt{ENTER} confirma la selección o permite continuar con una operación, 
+y \texttt{ESC} permite regresar o cancelar la acción correspondiente de acuerdo con el contexto de la interfaz.
+
+La configuración de \texttt{ncurses} incluye funciones para controlar el eco de los caracteres, habilitar la lectura de teclas y procesar las teclas especiales. 
+En particular, el uso de \texttt{noecho()} evita que la entrada se muestre automáticamente en pantalla, 
+mientras que \texttt{keypad()} permite interpretar teclas como las flechas y \texttt{ESC} de acuerdo con la configuración del terminal.
+
+El uso de estas funciones centraliza la interacción con el teclado y permite mantener un comportamiento consistente entre las pantallas de autenticación y registro.
+
+\subsection{Registro de usuarios y validación de datos}
+
+El registro de usuarios permite crear nuevas cuentas a partir de un nombre de usuario, una dirección de correo electrónico y una contraseña con su respectiva confirmación. 
+Antes de almacenar una cuenta, el sistema verifica que los datos ingresados cumplan con las reglas de validación definidas para el proyecto.
+
+El nombre de usuario debe contener al menos cinco caracteres y no debe encontrarse registrado previamente. 
+Esta condición evita la creación de cuentas con nombres demasiado cortos y permite mantener la unicidad del identificador utilizado para iniciar sesión.
+
+La dirección de correo electrónico debe presentar una estructura válida y ser diferente de las direcciones que ya se encuentran registradas. 
+La validación comprueba la sintaxis de la dirección proporcionada, pero no verifica que el buzón exista ni que el usuario tenga acceso a él.
+
+La contraseña debe cumplir con los requisitos de complejidad establecidos: incluir letras mayúsculas, letras minúsculas, números y símbolos. 
+Además, el sistema solicita una segunda entrada para confirmar la contraseña. Ambas entradas deben coincidir para que el registro pueda continuar.
+
+Cuando un campo no cumple con las reglas correspondientes, el flujo de registro permite corregir la entrada inválida sin perder los valores válidos que ya se habían introducido en los demás campos. 
+De esta manera, la validación forma parte del proceso de captura de información y evita que una cuenta se registre con datos que incumplan las condiciones establecidas.
+
+Estas comprobaciones se aplican durante el registro de usuarios. 
+Su objetivo es reducir los errores de captura, evitar la duplicidad de identificadores y asegurar que la contraseña cumpla con los requisitos definidos antes de ser procesada para su almacenamiento.
+
+\subsection{Cifrado de contraseñas y autenticación}
+
+El tratamiento de las contraseñas constituye una parte esencial del sistema, ya que estos datos se utilizan para comprobar la identidad de los usuarios. 
+Por esta razón, la aplicación emplea las funciones criptográficas de \texttt{libsodium} para generar y verificar hashes de contraseñas mediante el algoritmo Argon2id.
+
+En lugar de guardar la contraseña original, el sistema utiliza la función \texttt{crypto\_pwhash\_str()} para generar una representación criptográfica destinada al almacenamiento. 
+Este procedimiento incorpora los parámetros necesarios para que la contraseña pueda verificarse posteriormente sin conservar su valor en texto plano.
+
+Durante el inicio de sesión, el sistema busca el registro correspondiente al nombre de usuario y utiliza la función \texttt{crypto\_pwhash\_str\_verify()} 
+para comparar la contraseña ingresada con el hash almacenado. La autenticación se considera correcta cuando existe el usuario y la verificación criptográfica confirma que 
+la contraseña proporcionada coincide con la utilizada para generar el hash.
+
+El comportamiento de la interfaz depende del resultado de esta validación. Cuando la contraseña es incorrecta, el campo correspondiente se limpia para permitir una nueva entrada, 
+mientras que el nombre de usuario se conserva. Si el nombre de usuario no existe, se limpian ambos campos, de modo que el siguiente intento comience con los datos de acceso vacíos.
+
+El uso de Argon2id permite almacenar hashes diseñados específicamente para la verificación de contraseñas. Sin embargo, este mecanismo no equivale al cifrado reversible: 
+el sistema no necesita recuperar la contraseña original, sino comprobar si la contraseña proporcionada produce una verificación válida frente al hash registrado.
+
+Adicionalmente, las funciones de limpieza de memoria de \texttt{libsodium}, como \texttt{sodium\_memzero()}, 
+permiten borrar explícitamente determinados datos sensibles de los búferes utilizados por el programa cuando corresponde. 
+Esta medida complementa el manejo de credenciales al reducir el tiempo durante el cual ciertos datos permanecen en memoria.
 
 \subsection{Registro y persistencia en archivos}
-Los usuarios y sus respectivas contraseñas cifradas se administran utilizando descriptores de archivo nativos de C. Si el sistema detecta que el usuario no se encuentra registrado, despliega la opción de registro. El sistema abre el archivo en modo de adición (\texttt{a+}) y escribe la nueva estructura de credenciales, garantizando la persistencia de la información para ejecuciones futuras.
 
-% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{img/captura_registro.png}
-%     \caption{Formulario de registro para nuevos usuarios y almacenamiento en el sistema de archivos.}
-% \end{figure}
+La información de las cuentas se conserva en un archivo local denominado \texttt{usuarios.txt}. 
+Este mecanismo proporciona persistencia entre ejecuciones sin requerir un sistema gestor de bases de datos ni una conexión a un servidor remoto.
 
-\newpage
+Los registros se almacenan utilizando una estructura delimitada por dos puntos, con los siguientes campos:
+
+\begin{verbatim}
+usuario:correo:hash
+\end{verbatim}
+
+En esta estructura, el primer campo corresponde al nombre de usuario, el segundo contiene la dirección de correo electrónico y el tercero almacena el hash de la contraseña. 
+La contraseña original no forma parte del registro persistente.
+
+La lectura del archivo permite localizar las cuentas existentes y recuperar la información necesaria para comprobar la unicidad del nombre de usuario y del correo electrónico, 
+así como para realizar la autenticación. Por su parte, el registro de una nueva cuenta incorpora los datos correspondientes al archivo para que permanezcan disponibles después de cerrar y 
+volver a ejecutar el programa.
+
+La persistencia local evita depender de servicios externos para las operaciones básicas del sistema. 
+No obstante, también implica que la disponibilidad y la integridad de los registros dependen de los permisos, el estado y la administración del archivo en el equipo donde se ejecuta la aplicación.
+
+El sistema utiliza un archivo de texto como mecanismo de almacenamiento, por lo que la protección de su contenido y 
+el acceso al entorno de ejecución forman parte de las consideraciones de seguridad de la implementación. El almacenamiento de hashes, 
+en lugar de contraseñas en texto plano, reduce la exposición directa de las credenciales, aunque no elimina la necesidad de proteger el archivo y el equipo.
+
+\subsection{Pruebas funcionales}
+
+Las pruebas funcionales permiten evaluar el comportamiento del sistema durante el registro de cuentas, la autenticación de usuarios y la conservación de los registros. 
+Los escenarios considerados incluyen operaciones exitosas y situaciones en las que los datos ingresados no cumplen con las reglas de validación.
+
+La Tabla \ref{tab:pruebas} presenta los casos de prueba y el comportamiento esperado en cada escenario.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Casos de prueba funcionales y resultados esperados}
+    \label{tab:pruebas}
+    \begin{tabular}{|p{0.7cm}|p{4.1cm}|p{4.0cm}|p{4.0cm}|}
+        \hline
+        \textbf{N.º} & \textbf{Escenario} & \textbf{Entrada o condición} & \textbf{Resultado esperado} \\
+        \hline
+        1 & Registro correcto & Datos válidos y cuenta no registrada previamente & La cuenta se registra y queda almacenada para futuras ejecuciones. \\
+        \hline
+        2 & Nombre de usuario corto & Nombre de usuario con menos de cinco caracteres & El registro no continúa hasta corregir el nombre de usuario. \\
+        \hline
+        3 & Nombre de usuario duplicado & Nombre de usuario que ya existe en el archivo de usuarios & El sistema rechaza el registro duplicado y solicita una entrada válida. \\
+        \hline
+        4 & Correo electrónico inválido & Dirección que no cumple con la estructura esperada & El sistema solicita corregir la dirección de correo electrónico. \\
+        \hline
+        5 & Correo electrónico duplicado & Dirección que ya se encuentra registrada & El sistema rechaza el registro duplicado. \\
+        \hline
+        6 & Contraseña débil & Contraseña que no incluye todos los tipos de caracteres requeridos & El sistema solicita una contraseña que cumpla las reglas de complejidad. \\
+        \hline
+        7 & Confirmación incorrecta & Contraseña y confirmación diferentes & El registro no se completa hasta que ambas entradas coincidan. \\
+        \hline
+        8 & Inicio de sesión correcto & Nombre de usuario existente y contraseña válida & El sistema permite completar la autenticación. \\
+        \hline
+        9 & Contraseña incorrecta & Nombre de usuario existente y contraseña que no coincide & El sistema rechaza el acceso y limpia el campo de contraseña, conservando el nombre de usuario. \\
+        \hline
+        10 & Usuario inexistente & Nombre de usuario que no está registrado & El sistema rechaza el acceso y limpia los campos de usuario y contraseña. \\
+        \hline
+        11 & Persistencia de datos & Cuenta registrada y aplicación ejecutada nuevamente & La cuenta continúa disponible para las operaciones de autenticación. \\
+        \hline
+        12 & Navegación por teclado & Uso de flechas, \texttt{ENTER} y \texttt{ESC} & La interfaz permite desplazarse, seleccionar opciones y regresar o cancelar según el contexto. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Los escenarios anteriores abarcan las operaciones principales del sistema y permiten distinguir los resultados de un registro válido de aquellos producidos por entradas incorrectas. 
+La comprobación de estos comportamientos proporciona una referencia para evaluar la correspondencia entre las reglas de negocio, la lógica de autenticación y la interacción presentada en la terminal.
+
+Los resultados observados durante las pruebas se interpretan en función de las condiciones de cada escenario. 
+En particular, el registro correcto debe conservar la cuenta en el archivo local, mientras que los intentos con datos inválidos deben impedir la creación de registros que incumplan las reglas establecidas. 
+De forma equivalente, el inicio de sesión debe permitir el acceso únicamente cuando la cuenta existe y la contraseña supera la verificación criptográfica.
+
+La persistencia se evalúa mediante la disponibilidad de los registros después de finalizar y volver a iniciar la aplicación. 
+Por otro lado, las pruebas de navegación permiten comprobar que los controles de teclado mantienen el comportamiento previsto en las distintas pantallas. 
+En conjunto, estos escenarios describen los aspectos funcionales esenciales de la aplicación, sin sustituir las comprobaciones específicas de seguridad, 
+concurrencia o resistencia ante modificaciones externas del archivo de usuarios.
