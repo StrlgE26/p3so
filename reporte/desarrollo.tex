@@ -1,0 +1,36 @@
+\section{Desarrollo}
+
+\subsection{Reglas de negocio y Compilación (Makefile)}
+Para esta práctica, todo el código fuente distribuido en los archivos \texttt{.c} y \texttt{.h} fue estructurado para compilarse mediante un archivo \texttt{Makefile}. A continuación se demuestra que la compilación se ejecutó estrictamente en lenguaje C sin advertencias ni errores:
+
+% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/captura_makefile.png}
+%     \caption{Compilación limpia del código fuente mediante el comando make.}
+% \end{figure}
+
+\subsection{Implementación del inicio de sesión con ncurses}
+Se implementó un menú interactivo utilizando la biblioteca ncurses para estructurar visualmente la entrada de datos. El sistema solicita el nombre de usuario y la contraseña, habiendo configurado previamente la terminal con la función \texttt{noecho()} para ocultar el texto introducido en el campo de la clave, cumpliendo con las especificaciones de la práctica.
+
+% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/captura_login.png}
+%     \caption{Interfaz basada en texto (ncurses) solicitando usuario y contraseña oculta.}
+% \end{figure}
+
+\subsection{Cifrado de contraseñas y validación}
+Antes de procesar las credenciales, el sistema valida que los campos no se encuentren vacíos y no excedan el límite de caracteres permitidos para prevenir desbordamientos de búfer. Seguidamente, la contraseña en texto plano pasa por el algoritmo de cifrado antes de ser comparada con los registros existentes o guardada en caso de ser un usuario nuevo. No se utilizan gestores de bases de datos externos.
+
+\subsection{Registro y persistencia en archivos}
+Los usuarios y sus respectivas contraseñas cifradas se administran utilizando descriptores de archivo nativos de C. Si el sistema detecta que el usuario no se encuentra registrado, despliega la opción de registro. El sistema abre el archivo en modo de adición (\texttt{a+}) y escribe la nueva estructura de credenciales, garantizando la persistencia de la información para ejecuciones futuras.
+
+% Descomentar y ajustar la ruta de la imagen cuando tengan la captura
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/captura_registro.png}
+%     \caption{Formulario de registro para nuevos usuarios y almacenamiento en el sistema de archivos.}
+% \end{figure}
+
+\newpage

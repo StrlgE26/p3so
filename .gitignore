@@ -1,0 +1,15 @@
+# C / Compilados
+*.o
+login/login_app
+login/acceso
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fls
+*.log
+*.out
+*.toc
+*.fdb_latexmk
+*.synctex.gz

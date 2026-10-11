@@ -1,0 +1,116 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{graphicx} 
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\geometry{left=2.5cm, right=2.5cm, top=2cm, bottom=2.5cm}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{url}
+\usepackage{mathptmx}
+\usepackage{titlesec}
+
+\titleformat{\section}{\normalfont\fontsize{16}{19}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{14}{17}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{14.5}\bfseries}{\thesubsubsection}{1em}{}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    
+    \begin{minipage}{0.15\textwidth}
+         \includegraphics[width=\linewidth]{img/logo_ipn.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        \textbf{\Large INSTITUTO POLITÉCNICO NACIONAL}\\[0.2cm]
+        \textbf{\large ESCUELA SUPERIOR DE CÓMPUTO}\\[0.2cm]
+        \large DEPARTAMENTO DE INGENIERÍA EN SISTEMAS COMPUTACIONALES
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.15\textwidth}
+         \includegraphics[width=\linewidth]{img/logo_escom.png} 
+    \end{minipage}
+
+    \vspace{2cm}
+
+    {\Large \textbf{Unidad de Aprendizaje:}} \\[0.5cm]
+    {\Huge \textbf{Sistemas Operativos}}
+    
+    \vspace{1.5cm}
+
+    {\Large \textbf{Práctica}} \\[0.5cm]
+    {\Huge \textbf{Inicio de sesión e interfaces basadas en texto}}
+
+    \vspace{1cm}
+
+    \begin{flushright}
+        \large
+        \vspace{1.5cm}
+        
+        \textbf{Equipo:} \\
+        Alvarez Garcia Martin \\
+        Hernandez Castillo Emir Adrian \\
+        Joaquín Rojas González \\
+        Nava Alvarado Donovan Emilio \\[1cm]
+        
+        \textbf{Grupo:} \\
+        4CV4 \\[1cm]
+        
+        \textbf{Profesor:} \\
+        José Alfredo Jiménez Benítez
+    \end{flushright}
+
+    \vfill
+
+    {\large Ciudad de México, 11 de octubre de 2026}
+
+\end{titlepage}
+
+\renewcommand{\contentsname}{Contenido}
+
+% RESUMEN
+\section*{Resumen}
+\addcontentsline{toc}{section}{Resumen}
+En el presente documento se detalla el diseño y desarrollo de un programa en lenguaje C que implementa un sistema de inicio de sesión mediante una interfaz basada en texto construida con la biblioteca ncurses. Se documentan los métodos de cifrado para contraseñas, la validación de entrada por parte del usuario y el almacenamiento persistente mediante archivos del sistema. Adicionalmente, se comprueba el cumplimiento de las reglas de negocio establecidas, como la ejecución sin gestores de bases de datos, sin el uso de sockets y la compilación exitosa sin errores usando Makefile.
+
+\newpage
+
+% ÍNDICE
+\tableofcontents
+
+\newpage
+
+% INTRODUCCIÓN
+\section{Introducción}
+El control de acceso es un componente crucial en la administración de sistemas operativos y aplicaciones de software. La presente práctica tiene como objetivo diseñar e implementar un inicio de sesión capaz de solicitar, validar, cifrar y almacenar de manera persistente las credenciales de usuarios. A través del lenguaje C y la biblioteca ncurses, se garantiza una interfaz visual limpia en terminal. Debido a las reglas establecidas en este proyecto, se omiten las arquitecturas con bases de datos relacionales y comunicaciones vía sockets, delegando la gestión y recuperación de credenciales netamente al sistema de archivos local de manera segura.
+
+\newpage
+
+% IMPORTACIÓN DE MÓDULOS
+\input{marco_teorico.tex}
+\input{desarrollo.tex}
+\input{conclusiones.tex}
+
+% REFERENCIAS
+\section{Referencias}
+\begin{itemize}
+    \item Kerrisk, M. (2010). \textit{The Linux Programming Interface: A Linux and UNIX System Programming Handbook}. No Starch Press.
+    \item Stallman, R., \& McGrath, R. (2004). \textit{GNU Make: A Program for Directing Recompilation}. Free Software Foundation.
+    \item Strang, J. (1986). \textit{Programming with curses}. O'Reilly Media.
+\end{itemize}
+
+\newpage
+
+% ANEXOS
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos}
+En esta sección se incluye el repositorio oficial donde se encuentra el código fuente en lenguaje C, los archivos de cabecera y el archivo Makefile necesarios para la compilación del sistema:
+\begin{center}
+    \url{https://github.com/StrlgE26/p3so.git}
+\end{center}
+
+\end{document}

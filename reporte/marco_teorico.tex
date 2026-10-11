@@ -1,0 +1,12 @@
+\section{Marco Teórico}
+
+\subsection{Teoría sobre la creación de un inicio de sesión}
+Un sistema de inicio de sesión (login) es el mecanismo de seguridad primario mediante el cual un sistema operativo o aplicación informática controla el acceso a sus recursos. Su función principal es autenticar la identidad de un usuario comparando las credenciales proporcionadas (generalmente un nombre de usuario y una contraseña) con los registros previamente almacenados de forma segura en el sistema.
+
+\subsection{Algoritmos de cifrado}
+El almacenamiento de contraseñas en texto plano representa una vulnerabilidad crítica. Para mitigar este riesgo, los sistemas implementan algoritmos de cifrado o funciones de un solo sentido (hashing). En lenguaje C, es común utilizar funciones matemáticas o bibliotecas nativas como \texttt{crypt()} (basada en DES, MD5 o SHA) que transforman la contraseña original en una cadena de caracteres ilegible. Durante el inicio de sesión, el sistema cifra la contraseña ingresada y compara el resultado con el hash guardado; si ambos coinciden, se otorga el acceso sin que el sistema necesite conocer la clave original.
+
+\subsection{Biblioteca ncurses}
+\texttt{ncurses} (new curses) es una biblioteca de programación que proporciona una API para construir interfaces de usuario basadas en texto de manera independiente de la terminal. Permite controlar la posición del cursor, crear ventanas, utilizar colores y leer el teclado carácter por carácter. Funciones como \texttt{noecho()} son esenciales en los inicios de sesión, ya que desactivan el eco visual de la terminal, permitiendo que el usuario escriba su contraseña sin que los caracteres sean visibles en la pantalla.
+
+\newpage
