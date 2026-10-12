@@ -10,6 +10,14 @@
 \usepackage{url}
 \usepackage{mathptmx}
 \usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{placeins}
+\usepackage[T1]{fontenc}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{placeins}
+\setlength{\parskip}{3pt}
+\emergencystretch=2em
 
 \titleformat{\section}{\normalfont\fontsize{16}{19}\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalfont\fontsize{14}{17}\bfseries}{\thesubsection}{1em}{}
@@ -75,7 +83,27 @@
 % RESUMEN
 \section*{Resumen}
 \addcontentsline{toc}{section}{Resumen}
-En el presente documento se detalla el diseño y desarrollo de un programa en lenguaje C que implementa un sistema de inicio de sesión mediante una interfaz basada en texto construida con la biblioteca ncurses. Se documentan los métodos de cifrado para contraseñas, la validación de entrada por parte del usuario y el almacenamiento persistente mediante archivos del sistema. Adicionalmente, se comprueba el cumplimiento de las reglas de negocio establecidas, como la ejecución sin gestores de bases de datos, sin el uso de sockets y la compilación exitosa sin errores usando Makefile.
+El presente proyecto consiste en el desarrollo de un sistema de inicio de sesión e interfaces basadas en texto, implementado en lenguaje C mediante la biblioteca \texttt{ncurses}.
+El sistema, denominado JDM E-TICKETS, permite realizar el registro de usuarios y la autenticación mediante una interfaz interactiva en terminal.
+Su diseño integra mecanismos de validación de datos, procesamiento criptográfico de contraseñas y almacenamiento local de información, con el propósito de establecer un flujo de acceso que contemple tanto la interacción con el usuario como el manejo de sus credenciales.
+
+La interfaz permite desplazarse entre las opciones disponibles mediante el teclado, utilizando las teclas de dirección, \texttt{ENTER} y \texttt{ESC}.
+A través de los formularios se capturan los datos necesarios para crear una cuenta o iniciar sesión.
+Durante el registro se verifican condiciones como la longitud mínima del nombre de usuario, la estructura de la dirección de correo electrónico, la disponibilidad de ambos identificadores, la complejidad de la contraseña y la coincidencia entre la contraseña y su confirmación.
+Estas validaciones permiten controlar la información antes de completar el registro y proporcionan una respuesta cuando los datos ingresados no satisfacen los requisitos establecidos.
+
+En materia de seguridad, el sistema utiliza la biblioteca \texttt{libsodium} para generar y verificar hashes de contraseñas mediante el algoritmo Argon2id.
+De esta manera, las contraseñas originales no necesitan almacenarse directamente en el archivo de usuarios.
+La información persistente se conserva localmente en \texttt{usuarios.txt}, donde cada registro contiene el nombre de usuario, el correo electrónico y el hash correspondiente.
+Este mecanismo permite mantener las cuentas disponibles entre distintas ejecuciones de la aplicación, sin depender de un sistema gestor de bases de datos o de un servicio remoto.
+
+La organización del código fuente separa el flujo principal, las funciones de autenticación y los componentes de la interfaz, facilitando la identificación de las responsabilidades de cada módulo.
+Asimismo, la compilación se administra mediante un archivo \texttt{Makefile}, que define las opciones y las bibliotecas necesarias para generar el ejecutable.
+
+El proyecto integra conceptos de programación en C, manejo de terminal, validación de entradas, persistencia en archivos y protección criptográfica de credenciales.
+Su implementación permite estudiar cómo interactúan estos elementos en una aplicación de autenticación de alcance local y cómo una interfaz textual puede proporcionar navegación, mensajes de estado y formularios estructurados sin recurrir a un entorno gráfico.
+
+\noindent\textbf{Palabras clave:} sistemas operativos, lenguaje C, \texttt{ncurses}, autenticación, Argon2id, persistencia local y validación de datos.
 
 \newpage
 
@@ -86,13 +114,38 @@ En el presente documento se detalla el diseño y desarrollo de un programa en le
 
 % INTRODUCCIÓN
 \section{Introducción}
-El control de acceso es un componente crucial en la administración de sistemas operativos y aplicaciones de software. La presente práctica tiene como objetivo diseñar e implementar un inicio de sesión capaz de solicitar, validar, cifrar y almacenar de manera persistente las credenciales de usuarios. A través del lenguaje C y la biblioteca ncurses, se garantiza una interfaz visual limpia en terminal. Debido a las reglas establecidas en este proyecto, se omiten las arquitecturas con bases de datos relacionales y comunicaciones vía sockets, delegando la gestión y recuperación de credenciales netamente al sistema de archivos local de manera segura.
+Los sistemas de inicio de sesión constituyen un mecanismo fundamental para controlar el acceso a las aplicaciones que administran información asociada con distintos usuarios.
+Su funcionamiento requiere identificar a quien intenta ingresar, verificar sus credenciales y gestionar adecuadamente los datos utilizados durante el registro y la autenticación.
+Además de comprobar la correspondencia entre un nombre de usuario y una contraseña, resulta necesario contemplar la validación de las entradas, el almacenamiento persistente de las cuentas y la presentación de mensajes que permitan comprender el resultado de cada operación.
+
+En el contexto de los sistemas operativos, el desarrollo de una aplicación de estas características permite estudiar la interacción entre un programa y el entorno en el que se ejecuta.
+El manejo del teclado, la presentación de información en una terminal, la lectura y escritura de archivos y el uso de bibliotecas externas forman parte de los elementos que intervienen en su funcionamiento.
+Estos componentes adquieren especial relevancia cuando la aplicación debe mantener una interacción organizada sin utilizar ventanas, botones gráficos ni otros elementos propios de una interfaz visual tradicional.
+
+A partir de este contexto, se desarrolló JDM E-TICKETS, un sistema de registro e inicio de sesión implementado en lenguaje C.
+La aplicación utiliza la biblioteca \texttt{ncurses} para construir una interfaz basada en texto que permite navegar por las opciones y completar formularios mediante el teclado.
+Su funcionamiento contempla dos operaciones principales: la creación de cuentas nuevas y la autenticación de usuarios registrados.
+Para el registro, se establecen condiciones sobre el nombre de usuario, la dirección de correo electrónico y la contraseña, mientras que el inicio de sesión se basa en la existencia de la cuenta y la verificación de la contraseña proporcionada.
+
+Otro aspecto relevante del proyecto es el tratamiento de las credenciales.
+En lugar de conservar las contraseñas originales, la aplicación emplea \texttt{libsodium} y el algoritmo Argon2id para generar hashes que posteriormente se utilizan durante la autenticación.
+Los registros se almacenan en un archivo local denominado \texttt{usuarios.txt}, lo que permite conservar la información entre ejecuciones sin incorporar una base de datos ni depender de un servidor externo.
+Esta decisión delimita el alcance de la solución y permite concentrar su implementación en el procesamiento de datos, la interacción con el usuario y las operaciones de archivos.
+
+El objetivo principal del proyecto es implementar un mecanismo funcional de registro y autenticación que integre una interfaz textual, validaciones de entrada, verificación criptográfica de contraseñas y persistencia local.
+Para ello, el código se organiza en módulos que separan la lógica principal, las funciones de autenticación y los componentes visuales, mientras que el proceso de compilación se administra mediante un archivo \texttt{Makefile}.
+
+El reporte presenta los fundamentos relacionados con el funcionamiento del sistema y describe las decisiones tomadas durante su implementación.
+Asimismo, aborda la estructura del código fuente, la compilación, la construcción de la interfaz, las reglas de validación, el tratamiento de las contraseñas y el almacenamiento de los usuarios.
+Finalmente, se incluyen las conclusiones correspondientes y las referencias utilizadas para contextualizar el desarrollo.
+De esta manera, se expone la relación entre los conceptos estudiados y su aplicación en un programa de autenticación ejecutado desde una terminal de Linux.
 
 \newpage
 
 % IMPORTACIÓN DE MÓDULOS
 \input{marco_teorico.tex}
 \input{desarrollo.tex}
+\FloatBarrier
 \input{conclusiones.tex}
 
 \newpage
