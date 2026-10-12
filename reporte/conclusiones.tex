@@ -3,17 +3,44 @@
 \subsection{Alvarez Garcia Martin}
 % Escribe tu conclusión aquí. Recuerda usar una oración por línea de código para evitar conflictos en Git.
 
-\vspace{1cm}
+\newpage
 
 \subsection{Hernandez Castillo Emir Adrian}
-% Escribe tu conclusión aquí. Recuerda usar una oración por línea de código para evitar conflictos en Git.
 
-\vspace{1cm}
+La realización de esta práctica me permitió comprender de manera más clara cómo se relacionan la programación en C, el manejo de archivos y la interacción con el usuario dentro de una aplicación ejecutada en Linux.
+Uno de los principales aprendizajes fue identificar que el desarrollo de un sistema de inicio de sesión no consiste únicamente en solicitar un nombre de usuario y una contraseña, sino que también requiere validar los datos, administrar las credenciales y mantener la información disponible entre distintas ejecuciones.
+
+Uno de los aspectos que considero más relevantes fue la separación del código en módulos.
+Al organizar el flujo principal, la lógica de autenticación y los elementos de la interfaz en archivos independientes, comprendí la importancia de establecer responsabilidades específicas dentro del programa.
+Esta organización facilita la comprensión del funcionamiento del sistema y permite realizar modificaciones sin concentrar toda la lógica en un solo archivo.
+
+El uso de \texttt{ncurses} también me permitió comprender mejor la interacción entre una aplicación y la terminal.
+Mediante el manejo de las teclas de dirección, \texttt{ENTER} y \texttt{ESC}, fue posible construir una interfaz que permite desplazarse entre las opciones y completar los formularios sin recurrir a ventanas gráficas.
+Además, el tratamiento de los mensajes de error y de los campos de entrada me ayudó a identificar la importancia de proporcionar respuestas claras cuando el usuario introduce información incorrecta.
+
+En cuanto a la seguridad, comprendí que almacenar las contraseñas directamente en un archivo representa una práctica inadecuada para el manejo de credenciales.
+Por esta razón, el uso de \texttt{libsodium} y del algoritmo Argon2id permitió incorporar un mecanismo de generación y verificación de hashes sin necesidad de conservar las contraseñas originales.
+Este aspecto me permitió distinguir entre el cifrado reversible y el procesamiento de contraseñas mediante hashes, así como reconocer la importancia de utilizar funciones criptográficas especializadas en lugar de implementar estos procedimientos desde cero.
+
+Por otra parte, el almacenamiento de las cuentas en el archivo \texttt{usuarios.txt} me permitió comprender que la persistencia de la información depende de las operaciones de lectura y escritura realizadas por el propio programa.
+Al no utilizar un gestor de bases de datos, el sistema debe encargarse de organizar los registros y recuperar los datos necesarios durante la autenticación.
+También identifiqué que mantener la información en un archivo local implica considerar su integridad, sus permisos y la protección de los datos almacenados.
+
+Otro aprendizaje importante fue la necesidad de validar las entradas antes de completar el registro.
+Las condiciones relacionadas con el nombre de usuario, el correo electrónico, la complejidad de la contraseña y su confirmación permiten controlar los datos que recibe la aplicación y evitar registros que no cumplan con las reglas establecidas.
+Asimismo, el tratamiento diferenciado de los errores de autenticación demuestra que el comportamiento de la interfaz debe corresponder con el resultado de las comprobaciones realizadas por el programa.
+
+Finalmente, el uso de un archivo \texttt{Makefile} me permitió reconocer la importancia de organizar el proceso de compilación y especificar las dependencias necesarias para generar el ejecutable.
+En conclusión, esta práctica me permitió relacionar los conceptos de programación en C, manejo de archivos, entrada y salida mediante terminal y protección de credenciales con su aplicación en un sistema funcional.
+Considero que el principal aprendizaje fue comprender que la confiabilidad de una aplicación de autenticación depende de la integración adecuada de sus componentes y no solamente de que las operaciones principales puedan ejecutarse.
+Estos conocimientos constituyen una base para continuar desarrollando aplicaciones en Linux con una estructura más organizada y un manejo más cuidadoso de la información.
+
+\newpage
 
 \subsection{Joaquín Rojas González}
 % Escribe tu conclusión aquí. Recuerda usar una oración por línea de código para evitar conflictos en Git.
 
-\vspace{1cm}
+\newpage
 
 \subsection{Nava Alvarado Donovan Emilio}
 % Escribe tu conclusión aquí. Recuerda usar una oración por línea de código para evitar conflictos en Git.
