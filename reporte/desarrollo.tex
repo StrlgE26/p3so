@@ -1,22 +1,3 @@
-\newcommand{\capturap}[4]{%
-    \begin{figure}[htbp]
-        \centering
-        \IfFileExists{img/#1.png}{%
-            \includegraphics[width=#2\textwidth]{img/#1.png}%
-        }{%
-            \fbox{%
-                \parbox[c][4cm][c]{0.72\textwidth}{%
-                    \centering
-                    \textbf{Captura pendiente}\\[4pt]
-                    \texttt{img/#1.png}%
-                }%
-            }%
-        }%
-        \caption{#3}
-        \label{#4}
-    \end{figure}
-}
-
 \section{Desarrollo}
 
 El desarrollo del sistema de inicio de sesión se realizó en lenguaje C, utilizando la biblioteca \texttt{ncurses} para construir una interfaz de usuario basada en texto y la biblioteca \texttt{libsodium} para el procesamiento de contraseñas.
@@ -35,7 +16,7 @@ El archivo principal coordina ambos módulos para establecer el flujo de navegac
 
 \subsection{Compilación del programa}
 
-La compilación se administra mediante un archivo \texttt{Makefile}, que reúne las opciones del compilador, los archivos fuente y las bibliotecas requeridas por el proyecto.
+La compilación se administra mediante un archivo \texttt{Makefile}, que reúne las opciones del compilador, los archivos fuente y las bibliotecas requeridas por el proyecto \cite{make}.
 Para generar el ejecutable se utiliza GCC con el estándar C11 y opciones de advertencia como \texttt{-Wall}, \texttt{-Wextra} y \texttt{-Wpedantic}, que ayudan a identificar posibles errores y construcciones que no se ajustan al estándar seleccionado.
 La opción \texttt{-O2} aplica optimizaciones al código generado.
 
@@ -43,31 +24,47 @@ El programa requiere las bibliotecas \texttt{ncurses}, \texttt{tinfo} y \texttt{
 Las bibliotecas relacionadas con \texttt{ncurses} proporcionan las funciones necesarias para trabajar con la terminal, mientras que \texttt{libsodium} incorpora las operaciones criptográficas empleadas para procesar las contraseñas.
 Estas dependencias deben estar disponibles en el entorno para que el proceso de compilación pueda completarse correctamente.
 
-La compilación puede realizarse desde el directorio del proyecto mediante el comando siguiente:
+La compilación del proyecto se inicia desde el directorio que contiene el archivo \texttt{Makefile} mediante el comando siguiente:
 
-\begin{verbatim}
-make
-\end{verbatim}
+\begin{center}
+    \texttt{make}
+\end{center}
 
-Cuando la compilación finaliza correctamente, se genera el ejecutable \texttt{acceso}, que puede iniciarse desde el mismo directorio mediante el comando \texttt{./acceso}.
-Este procedimiento permite construir y ejecutar el sistema a partir de los archivos fuente, siempre que las dependencias requeridas se encuentren instaladas en el entorno.
+Cuando la compilación finaliza correctamente, se genera el ejecutable \texttt{acceso}, que puede iniciarse desde el mismo directorio mediante el comando siguiente:
 
-\capturap{compilacion}{0.82}{Compilación del sistema mediante el archivo \texttt{Makefile}.}{fig:compilacion}
+\begin{center}
+    \texttt{./acceso}
+\end{center}
+
+La Figura~\ref{fig:compilacion} muestra la salida de la terminal durante la compilación del proyecto y sirve como evidencia visual del proceso de construcción del ejecutable.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/compilacion.png}{\includegraphics[width=0.82\textwidth]{img/compilacion.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/compilacion.png}}}}
+    \caption{Compilación del sistema mediante el archivo \texttt{Makefile}.}
+    \label{fig:compilacion}
+\end{figure}
 
 \subsection{Implementación de la interfaz con ncurses}
 
-La interfaz de usuario se desarrolló mediante la biblioteca \texttt{ncurses}, que permite controlar la presentación de texto, la posición del cursor y la lectura de entradas del teclado dentro de una terminal.
+La interfaz de usuario se desarrolló mediante la biblioteca \texttt{ncurses}, que permite controlar la presentación de texto, la posición del cursor y la lectura de entradas del teclado dentro de una terminal \cite{stevens2013}.
 Su utilización hace posible organizar los formularios y los mensajes de la aplicación sin recurrir a una interfaz gráfica tradicional, manteniendo la interacción dentro del entorno de consola.
 
 La pantalla principal presenta las opciones relacionadas con el acceso y el registro de cuentas, y los campos de entrada se representan visualmente como cuadros de texto.
 Las opciones seleccionadas se distinguen mediante resaltados de color, mientras que la combinación de fondo oscuro y texto claro mantiene una presentación uniforme en las distintas pantallas.
+La Figura~\ref{fig:menu-principal} muestra la pantalla inicial de JDM E-TICKETS y la distribución de las opciones disponibles para el usuario.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/menuprincipal.png}{\includegraphics[width=0.78\textwidth]{img/menuprincipal.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/menuprincipal.png}}}}
+    \caption{Menú principal de JDM E-TICKETS.}
+    \label{fig:menu-principal}
+\end{figure}
 
 La navegación se realiza mediante las teclas de dirección, \texttt{ENTER} y \texttt{ESC}.
 Las teclas de dirección permiten desplazarse entre las opciones disponibles, \texttt{ENTER} confirma la selección o permite continuar con una operación y \texttt{ESC} permite regresar o cancelar la acción correspondiente de acuerdo con el contexto de la interfaz.
-La configuración de \texttt{ncurses} incluye funciones como \texttt{noecho()}, que evita que la entrada se muestre automáticamente en pantalla, y \texttt{keypad()}, que permite interpretar teclas especiales según la configuración del terminal.
+La configuración de \texttt{ncurses} incluye funciones como \texttt{noecho()}, que evita que la entrada se muestre automáticamente en pantalla, y \texttt{keypad()}, que permite interpretar teclas especiales según la configuración del terminal \cite{stevens2013}.
 Estas funciones centralizan la interacción con el teclado y contribuyen a mantener un comportamiento consistente entre las pantallas de autenticación y registro.
-
-\capturap{menuprincipal}{0.78}{Menú principal de JDM E-TICKETS.}{fig:menu-principal}
 
 \subsection{Registro de usuarios y validación de datos}
 
@@ -82,23 +79,49 @@ La contraseña debe cumplir con los requisitos de complejidad establecidos, que 
 Además, el sistema solicita una segunda entrada para confirmar la contraseña y ambas entradas deben coincidir para que el registro pueda continuar.
 Cuando un campo no cumple con las reglas correspondientes, el flujo de registro permite corregir la entrada inválida sin perder los valores válidos que ya se habían introducido en los demás campos.
 
-En conjunto, estas comprobaciones forman parte del proceso de captura de información y permiten reducir los errores de entrada, evitar la duplicidad de identificadores y asegurar que la contraseña cumpla con los requisitos definidos antes de su procesamiento para el almacenamiento.
-Las capturas siguientes muestran ejemplos de los mensajes presentados ante datos inválidos y de la confirmación que se muestra cuando el registro finaliza correctamente.
+Las Figuras~\ref{fig:registro-usuario-fallido}, \ref{fig:registro-correo-invalido}, \ref{fig:registro-password-debil} y \ref{fig:registro-password-no-coincide} muestran ejemplos de las validaciones aplicadas durante el registro: el rechazo de un nombre de usuario no válido, la detección de una dirección de correo incorrecta, una contraseña que no cumple los requisitos de complejidad y una confirmación que no coincide.
+La Figura~\ref{fig:cuenta-registrada} presenta el mensaje que aparece cuando una cuenta se registra correctamente.
+En conjunto, estas evidencias permiten relacionar las reglas de validación con las respuestas que presenta la interfaz.
 
-\capturap{registrouserfallido}{0.74}{Validación de un nombre de usuario que no cumple con las condiciones de registro.}{fig:registro-usuario-fallido}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/registrouserfallido.png}{\includegraphics[width=0.74\textwidth]{img/registrouserfallido.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/registrouserfallido.png}}}}
+    \caption{Validación de un nombre de usuario que no cumple con las condiciones de registro.}
+    \label{fig:registro-usuario-fallido}
+\end{figure}
 
-\capturap{registrocorreonovalido}{0.74}{Mensaje de validación al ingresar una dirección de correo electrónico con estructura incorrecta.}{fig:registro-correo-invalido}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/registrocorreonovalido.png}{\includegraphics[width=0.74\textwidth]{img/registrocorreonovalido.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/registrocorreonovalido.png}}}}
+    \caption{Mensaje de validación al ingresar una dirección de correo electrónico con estructura incorrecta.}
+    \label{fig:registro-correo-invalido}
+\end{figure}
 
-\capturap{registropassworddebil}{0.74}{Aviso presentado cuando la contraseña no satisface los requisitos de complejidad.}{fig:registro-password-debil}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/registropassworddebil.png}{\includegraphics[width=0.74\textwidth]{img/registropassworddebil.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/registropassworddebil.png}}}}
+    \caption{Aviso presentado cuando la contraseña no satisface los requisitos de complejidad.}
+    \label{fig:registro-password-debil}
+\end{figure}
 
-\capturap{registropasswordnocoincide}{0.74}{Mensaje presentado cuando la contraseña y su confirmación son diferentes.}{fig:registro-password-no-coincide}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/registropasswordnocoincide.png}{\includegraphics[width=0.74\textwidth]{img/registropasswordnocoincide.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/registropasswordnocoincide.png}}}}
+    \caption{Mensaje presentado cuando la contraseña y su confirmación son diferentes.}
+    \label{fig:registro-password-no-coincide}
+\end{figure}
 
-\capturap{cuentaregistrada}{0.74}{Confirmación visual del registro exitoso de una cuenta.}{fig:cuenta-registrada}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/cuentaregistrada.png}{\includegraphics[width=0.74\textwidth]{img/cuentaregistrada.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/cuentaregistrada.png}}}}
+    \caption{Confirmación visual del registro exitoso de una cuenta.}
+    \label{fig:cuenta-registrada}
+\end{figure}
 
-\subsection{Cifrado de contraseñas y autenticación}
+\subsection{Protección de contraseñas y autenticación}
 
 El tratamiento de las contraseñas es una parte esencial del sistema, ya que estos datos se utilizan para comprobar la identidad de los usuarios.
-Por esta razón, la aplicación emplea las funciones criptográficas de \texttt{libsodium} para generar y verificar hashes de contraseñas mediante el algoritmo Argon2id, evitando que la contraseña original tenga que conservarse directamente en el archivo de usuarios.
+Por esta razón, la aplicación emplea las funciones criptográficas de \texttt{libsodium} para generar y verificar hashes de contraseñas mediante el algoritmo Argon2id, evitando que la contraseña original tenga que conservarse directamente en el archivo de usuarios \cite{libsodium}.
 
 Durante el registro, la función \texttt{crypto\_pwhash\_str()} genera una representación criptográfica destinada al almacenamiento e incorpora los parámetros necesarios para verificar la contraseña posteriormente.
 Durante el inicio de sesión, el sistema busca el registro correspondiente al nombre de usuario y utiliza \texttt{crypto\_pwhash\_str\_verify()} para comprobar la contraseña ingresada frente al hash almacenado.
@@ -110,24 +133,44 @@ Argon2id se utiliza para la verificación de contraseñas mediante hashes y no e
 
 Adicionalmente, las funciones de limpieza de memoria de \texttt{libsodium}, como \texttt{sodium\_memzero()}, permiten borrar explícitamente determinados datos sensibles de los búferes utilizados por el programa cuando corresponde.
 Esta medida complementa el manejo de credenciales al reducir el tiempo durante el cual ciertos datos permanecen en memoria.
-Las capturas de esta sección muestran los estados de la interfaz durante un intento de acceso, el rechazo de credenciales incorrectas y la autenticación exitosa.
+Las Figuras~\ref{fig:login-password}, \ref{fig:login-password-incorrecta}, \ref{fig:login-usuario-inexistente} y \ref{fig:login-exitoso} ilustran los principales estados del inicio de sesión: el formulario de entrada, el rechazo de una contraseña incorrecta, la respuesta ante un usuario inexistente y la confirmación de una autenticación correcta.
 
-\capturap{loginpassword}{0.74}{Formulario de inicio de sesión con el campo de contraseña.}{fig:login-password}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/loginpassword.png}{\includegraphics[width=0.74\textwidth]{img/loginpassword.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/loginpassword.png}}}}
+    \caption{Formulario de inicio de sesión con el campo de contraseña.}
+    \label{fig:login-password}
+\end{figure}
 
-\capturap{loginpasswordincorrecta}{0.74}{Respuesta de la aplicación ante una contraseña incorrecta.}{fig:login-password-incorrecta}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/loginpasswordincorrecta.png}{\includegraphics[width=0.74\textwidth]{img/loginpasswordincorrecta.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/loginpasswordincorrecta.png}}}}
+    \caption{Respuesta de la aplicación ante una contraseña incorrecta.}
+    \label{fig:login-password-incorrecta}
+\end{figure}
 
-\capturap{loginusernoexiste}{0.74}{Respuesta de la aplicación cuando el nombre de usuario no está registrado.}{fig:login-usuario-inexistente}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/loginusernoexiste.png}{\includegraphics[width=0.74\textwidth]{img/loginusernoexiste.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/loginusernoexiste.png}}}}
+    \caption{Respuesta de la aplicación cuando el nombre de usuario no está registrado.}
+    \label{fig:login-usuario-inexistente}
+\end{figure}
 
-\capturap{loginexitoso}{0.74}{Confirmación visual de un inicio de sesión correcto.}{fig:login-exitoso}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/loginexitoso.png}{\includegraphics[width=0.74\textwidth]{img/loginexitoso.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/loginexitoso.png}}}}
+    \caption{Confirmación visual de un inicio de sesión correcto.}
+    \label{fig:login-exitoso}
+\end{figure}
 
 \subsection{Registro y persistencia en archivos}
 
-La información de las cuentas se conserva en un archivo local denominado \texttt{usuarios.txt}, lo que permite mantener los registros entre ejecuciones sin requerir un sistema gestor de bases de datos ni una conexión a un servidor remoto.
+La información de las cuentas se conserva en un archivo local denominado \texttt{usuarios.txt}, lo que permite mantener los registros entre ejecuciones sin requerir un sistema gestor de bases de datos ni una conexión a un servidor remoto. El uso de archivos como mecanismo de persistencia requiere considerar las operaciones de lectura y escritura, así como los permisos de acceso y la protección de la información almacenada \cite{tanenbaum2009,stevens2013,kerrisk2010}.
 Los datos se almacenan en registros delimitados por dos puntos, con el nombre de usuario, el correo electrónico y el hash de la contraseña, de acuerdo con la estructura siguiente:
 
-\begin{verbatim}
-usuario:correo:hash
-\end{verbatim}
+\begin{center}
+    \texttt{usuario:correo:hash}
+\end{center}
 
 En esta estructura, el primer campo corresponde al nombre de usuario, el segundo contiene la dirección de correo electrónico y el tercero almacena el hash generado para la contraseña.
 Por lo tanto, la contraseña original no forma parte del registro persistente.
@@ -136,18 +179,23 @@ La lectura del archivo permite localizar las cuentas existentes y recuperar la i
 Cuando se registra una nueva cuenta, la información correspondiente se incorpora al archivo para que permanezca disponible después de cerrar y volver a ejecutar el programa.
 Este enfoque evita depender de servicios externos para las operaciones básicas del sistema, aunque la disponibilidad y la integridad de los registros siguen dependiendo de los permisos, el estado y la administración del archivo en el equipo donde se ejecuta la aplicación.
 El almacenamiento de hashes reduce la exposición directa de las credenciales, pero no elimina la necesidad de proteger el archivo y el entorno de ejecución.
+La Figura~\ref{fig:datos-usuarios} muestra un ejemplo de la estructura de los datos persistidos localmente y permite distinguir los campos que componen cada registro.
 
-\capturap{datos}{0.82}{Estructura de los registros almacenados localmente en el archivo de usuarios.}{fig:datos-usuarios}
+\begin{figure}[H]
+    \centering
+    \IfFileExists{img/datos.png}{\includegraphics[width=0.82\textwidth]{img/datos.png}}{\fbox{\parbox[c][4cm][c]{0.72\textwidth}{\centering\textbf{Captura pendiente}\\[4pt]\texttt{img/datos.png}}}}
+    \caption{Estructura de los registros almacenados localmente en el archivo de usuarios.}
+    \label{fig:datos-usuarios}
+\end{figure}
 
 \subsection{Pruebas funcionales}
 
 Las pruebas funcionales permiten evaluar el comportamiento del sistema durante el registro de cuentas, la autenticación de usuarios y la conservación de los registros.
 Los escenarios considerados incluyen operaciones exitosas y situaciones en las que los datos ingresados no cumplen con las reglas de validación.
-La Tabla \ref{tab:pruebas} presenta los casos de prueba y los resultados esperados para cada escenario.
+La Tabla~\ref{tab:pruebas} reúne doce escenarios representativos y describe tanto las condiciones de entrada como el resultado esperado en cada caso.
+Esta organización permite relacionar cada regla de negocio con el comportamiento que debe observarse durante la ejecución del programa.
 
-\newpage
-
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
     \small
     \renewcommand{\arraystretch}{1.2}

@@ -14,8 +14,8 @@
 \usepackage{placeins}
 \usepackage[T1]{fontenc}
 \usepackage{array}
+\usepackage[hidelinks]{hyperref}
 \usepackage{tabularx}
-\usepackage{placeins}
 \setlength{\parskip}{3pt}
 \emergencystretch=2em
 
@@ -82,6 +82,7 @@
 
 % RESUMEN
 \section*{Resumen}
+\phantomsection
 \addcontentsline{toc}{section}{Resumen}
 El presente proyecto consiste en el desarrollo de un sistema de inicio de sesión e interfaces basadas en texto, implementado en lenguaje C mediante la biblioteca \texttt{ncurses}.
 El sistema, denominado JDM E-TICKETS, permite realizar el registro de usuarios y la autenticación mediante una interfaz interactiva en terminal.
@@ -151,17 +152,46 @@ De esta manera, se expone la relación entre los conceptos estudiados y su aplic
 \newpage
 
 % REFERENCIAS
+\newpage
+\addcontentsline{toc}{section}{Referencias}
 \section{Referencias}
-\begin{itemize}
-    \item Kerrisk, M. (2010). \textit{The Linux Programming Interface: A Linux and UNIX System Programming Handbook}. No Starch Press.
-    \item Stallman, R., \& McGrath, R. (2004). \textit{GNU Make: A Program for Directing Recompilation}. Free Software Foundation.
-    \item Strang, J. (1986). \textit{Programming with curses}. O'Reilly Media.
-\end{itemize}
+
+\begin{thebibliography}{00}
+
+\bibitem{tanenbaum2009}
+A. S. Tanenbaum, \textit{Sistemas Operativos Modernos}, 3.a ed.
+México: Pearson Educación, 2009.
+
+\bibitem{silberschatz2006}
+A. Silberschatz, P. B. Galvin y G. Gagne,
+\textit{Fundamentos de Sistemas Operativos}, 7.a ed.
+México: McGraw Hill Education, 2006.
+
+\bibitem{stevens2013}
+W. R. Stevens y S. A. Rago,
+\textit{Advanced Programming in the UNIX Environment}, 3.a ed.
+Addison-Wesley Professional, 2013.
+
+\bibitem{kerrisk2010}
+M. Kerrisk,
+\textit{The Linux Programming Interface: A Linux and UNIX System Programming Handbook}.
+San Francisco, CA: No Starch Press, 2010.
+
+\bibitem{libsodium}
+Libsodium. \textit{Password Hashing}. Documentación oficial.
+Disponible en: \url{https://doc.libsodium.org/password_hashing}.
+
+\bibitem{make}
+GNU Project. \textit{GNU Make Manual}.
+Disponible en: \url{https://www.gnu.org/software/make/manual/make.html}.
+
+\end{thebibliography}
 
 \newpage
 
 % ANEXOS
 \section*{Anexos}
+\phantomsection
 \addcontentsline{toc}{section}{Anexos}
 En esta sección se incluye el repositorio oficial donde se encuentra el código fuente en lenguaje C, los archivos de cabecera y el archivo Makefile necesarios para la compilación del sistema:
 \begin{center}
